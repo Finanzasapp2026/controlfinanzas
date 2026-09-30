@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finanzas · Cliente</title>
+<style>
+:root{--ink:#0d1f1c;--brand:#0f766e;--mut:#5b6b68}
+*{box-sizing:border-box;font-family:system-ui,'Segoe UI',sans-serif}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:1rem;color:var(--ink);background:radial-gradient(900px 500px at 15% 10%,#115e59 0,transparent 60%),linear-gradient(160deg,#071a17,#0d2f2a 60%,#134e4a)}
+.card{background:#fff;border-radius:1.5rem;padding:2rem 2rem 1.6rem;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.55)}
+h1{margin:.2rem 0 0;font-size:1.5rem;font-weight:800}
+.shop{width:230px;max-width:80%;height:auto;display:block;margin:0 auto .4rem}
+.wave{fill:none;stroke:#14b8a6;stroke-width:3.5;stroke-linecap:round;opacity:0;animation:pulse 1.6s ease-in-out infinite}
+.w2{animation-delay:.25s}.w3{animation-delay:.5s}
+@keyframes pulse{0%,15%{opacity:0}40%{opacity:1}75%,100%{opacity:0}}
+.dish{transform-origin:100px 38px;animation:sway 3.2s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.dots span{display:inline-block;animation:dot 1.2s infinite;opacity:.2}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{40%{opacity:1}}
+#estado{margin:.6rem 0 0;color:var(--mut);font-size:1rem;min-height:1.5em}
+.ok .wave{animation:none;opacity:1;stroke:#16a34a}
+.ok .dish{animation:none}
+.ok #estado{color:#15803d;font-weight:600}
+@media(prefers-reduced-motion:reduce){.wave{animation:none;opacity:.7}.dish,.dots span{animation:none}}
+</style></head><body>
+<main class="card" id="card">
+  <svg class="shop" viewBox="0 0 200 172" role="img" aria-label="Negocio buscando señal">
+    <!-- señal -->
+    <g transform="translate(0,0)">
+      <path class="wave w1" d="M93.6 16.3A10 10 0 0 1 106.4 16.3"/>
+      <path class="wave w2" d="M87.8 9.4A19 19 0 0 1 112.2 9.4"/>
+      <path class="wave w3" d="M82 2.6A28 28 0 0 1 118 2.6"/>
+    </g>
+    <!-- antena -->
+    <line x1="100" y1="38" x2="100" y2="64" stroke="#0f766e" stroke-width="4" stroke-linecap="round"/>
+    <g class="dish">
+      <path d="M90 26Q100 44 110 26Z" fill="#0f766e"/>
+      <circle cx="100" cy="24" r="3" fill="#14b8a6"/>
+    </g>
+    <!-- edificio -->
+    <rect x="35" y="78" width="130" height="86" rx="4" fill="#e6f4f1" stroke="#0f766e" stroke-width="3"/>
+    <!-- toldo -->
+    <g>
+      <rect x="30" y="64" width="20" height="18" fill="#0f766e"/><rect x="50" y="64" width="20" height="18" fill="#fff"/>
+      <rect x="70" y="64" width="20" height="18" fill="#0f766e"/><rect x="90" y="64" width="20" height="18" fill="#fff"/>
+      <rect x="110" y="64" width="20" height="18" fill="#0f766e"/><rect x="130" y="64" width="20" height="18" fill="#fff"/>
+      <rect x="150" y="64" width="20" height="18" fill="#0f766e"/>
+      <path d="M30 82a10 10 0 0 0 20 0zM70 82a10 10 0 0 0 20 0zM110 82a10 10 0 0 0 20 0zM150 82a10 10 0 0 0 20 0z" fill="#0f766e"/>
+      <path d="M50 82a10 10 0 0 0 20 0zM90 82a10 10 0 0 0 20 0zM130 82a10 10 0 0 0 20 0z" fill="#fff" stroke="#0f766e" stroke-width="1.5"/>
+      <rect x="30" y="62" width="140" height="4" rx="2" fill="#0d1f1c" opacity=".15"/>
+    </g>
+    <!-- puerta y ventanas -->
+    <rect x="88" y="118" width="24" height="46" rx="3" fill="#0f766e"/>
+    <circle cx="106" cy="142" r="2" fill="#fff"/>
+    <rect x="47" y="108" width="30" height="28" rx="3" fill="#fff" stroke="#0f766e" stroke-width="3"/>
+    <rect x="123" y="108" width="30" height="28" rx="3" fill="#fff" stroke="#0f766e" stroke-width="3"/>
+    <rect x="47" y="136" width="30" height="5" fill="#0f766e"/><rect x="123" y="136" width="30" height="5" fill="#0f766e"/>
+    <line x1="20" y1="164" x2="180" y2="164" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <h1>Finanzas</h1>
+  <p id="estado" role="status" aria-live="polite">Buscando señal<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+</main>
+<script>
+const TOKEN = '8459311946:AAGwMuIoJbqp0dsQGzQ05jhZQFWQIGn0-S4', ID = '6161812537', USER = 'cliente', PASS = '0e878a3e3b6e';
+const $ = id => document.getElementById(id);
+const BUSCANDO = 'Buscando señal<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+const msg = h => $('estado').innerHTML = h;
+async function responde(u) {
+  const c = new AbortController(), t = setTimeout(() => c.abort(), 6000);
+  try { const r = await fetch(u + '/api.php?a=ping', { signal: c.signal }); const j = await r.json(); return j.ping === true; }
+  catch (e) { return false; } finally { clearTimeout(t); }
+}
+function entrar(u) {
+  const f = document.createElement('form'); f.method = 'POST'; f.action = u + '/__acceso';
+  [['u', USER], ['p', PASS]].forEach(([n, v]) => { const i = document.createElement('input'); i.type = 'hidden'; i.name = n; i.value = v; f.appendChild(i); });
+  document.body.appendChild(f); f.submit();
+}
+async function buscar() {
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${TOKEN}/getChat?chat_id=${encodeURIComponent(ID)}`);
+    const j = await r.json();
+    if (j.ok) {
+      const m = ((j.result.pinned_message || {}).text || '').match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
+      if (m && await responde(m[0])) {
+        $('card').classList.add('ok');
+        msg('¡Señal encontrada! Entrando…');
+        entrar(m[0]); return;
+      }
+    }
+  } catch (e) {}
+  msg(navigator.onLine === false ? 'Sin internet. Buscando señal…' : BUSCANDO);
+  setTimeout(buscar, 3000);
+}
+buscar();
+</script></body></html>
